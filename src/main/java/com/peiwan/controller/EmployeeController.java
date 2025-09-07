@@ -174,4 +174,51 @@ public class EmployeeController {
                     .requestId(httpRequest.getHeader("X-Request-Id"));
         }
     }
+
+    @GetMapping("/game-skills")
+    @Operation(summary = "获取我的游戏技能", description = "员工获取自己的游戏技能列表")
+    public ApiResponse<List<GameSkill>> getMyGameSkills(HttpServletRequest httpRequest) {
+        try {
+            String employeeIdStr = httpRequest.getHeader("X-User-Id");
+            if (employeeIdStr == null) {
+                return ApiResponse.<List<GameSkill>>error(401, "未找到用户信息")
+                        .requestId(httpRequest.getHeader("X-Request-Id"));
+            }
+
+            Long employeeId = Long.parseLong(employeeIdStr);
+            EmployeeProfile profile = employeeService.findByUserId(employeeId);
+            if (profile == null) {
+                profile = employeeService.createProfile(employeeId);
+            }
+
+            List<GameSkill> gameSkills = employeeService.findGameSkillsByProfileId(profile.getId());
+            return ApiResponse.success("获取我的游戏技能成功", gameSkills)
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        } catch (Exception e) {
+            log.error("获取我的游戏技能失败: {}", e.getMessage());
+            return ApiResponse.<List<GameSkill>>error(500, "获取我的游戏技能失败")
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        }
+    }
+
+    @PutMapping("/game-skills")
+    @Operation(summary = "更新我的游戏技能", description = "员工更新自己的游戏技能列表")
+    public ApiResponse<List<GameSkill>> updateMyGameSkills(@RequestBody List<GameSkill> gameSkills, HttpServletRequest httpRequest) {
+        try {
+            String employeeIdStr = httpRequest.getHeader("X-User-Id");
+            if (employeeIdStr == null) {
+                return ApiResponse.<List<GameSkill>>error(401, "未找到用户信息")
+                        .requestId(httpRequest.getHeader("X-Request-Id"));
+            }
+
+            Long employeeId = Long.parseLong(employeeIdStr);
+            List<GameSkill> updatedSkills = employeeService.updateGameSkills(employeeId, gameSkills);
+            return ApiResponse.success("游戏技能更新成功", updatedSkills)
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        } catch (Exception e) {
+            log.error("更新游戏技能失败: {}", e.getMessage());
+            return ApiResponse.<List<GameSkill>>error(400, e.getMessage())
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        }
+    }
 }

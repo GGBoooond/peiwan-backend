@@ -2,7 +2,6 @@ package com.peiwan.service;
 
 import com.peiwan.entity.EmployeeProfile;
 import com.peiwan.entity.GameSkill;
-import com.peiwan.entity.User;
 
 import java.util.List;
 

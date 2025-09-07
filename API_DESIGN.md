@@ -7,7 +7,7 @@
 - **数据格式**: JSON
 
 ## 统一响应格式
-
+a
 ```json
 {
   "code": 200,
@@ -83,6 +83,45 @@
 - **POST** `/employee/orders/{orderId}/complete`
 - **权限**: EMPLOYEE
 - **请求体**: `{"imageUrl": "完成截图URL"}`
+
+### 游戏技能管理
+
+#### 获取游戏技能
+- **GET** `/game-skills/{id}` - 根据ID获取游戏技能
+- **GET** `/game-skills/profile/{profileId}` - 获取员工的游戏技能列表
+- **GET** `/game-skills/my-skills` - 获取当前员工的游戏技能
+- **GET** `/game-skills/game/{gameName}` - 根据游戏名称搜索技能
+
+#### 管理游戏技能
+- **POST** `/game-skills` - 创建游戏技能
+- **PUT** `/game-skills/{id}` - 更新游戏技能
+- **DELETE** `/game-skills/{id}` - 删除游戏技能
+- **POST** `/game-skills/batch` - 批量创建游戏技能
+
+### 客服员工关系管理
+
+#### 获取关系信息
+- **GET** `/cs-employee-mappings/{id}` - 根据ID获取客服员工关系
+- **GET** `/cs-employee-mappings/cs/{csUserId}` - 获取客服管理的员工关系
+- **GET** `/cs-employee-mappings/employee/{employeeUserId}` - 获取员工的客服关系
+- **GET** `/cs-employee-mappings/my-employees` - 获取当前客服管理的员工
+- **GET** `/cs-employee-mappings` - 获取所有客服员工关系（管理员权限）
+
+#### 管理关系
+- **POST** `/cs-employee-mappings` - 创建客服员工关系
+- **POST** `/cs-employee-mappings/batch` - 批量创建客服员工关系
+- **PUT** `/cs-employee-mappings/{id}` - 更新客服员工关系
+- **POST** `/cs-employee-mappings/reassign` - 重新分配员工
+- **DELETE** `/cs-employee-mappings/{id}` - 删除客服员工关系
+- **DELETE** `/cs-employee-mappings/cs/{csUserId}` - 删除客服的所有员工关系
+- **DELETE** `/cs-employee-mappings/employee/{employeeUserId}` - 删除员工的所有关系
+- **GET** `/cs-employee-mappings/check` - 检查客服员工关系
+
+### 员工游戏技能（在员工模块中）
+
+#### 获取和更新技能
+- **GET** `/employee/game-skills` - 获取我的游戏技能
+- **PUT** `/employee/game-skills` - 更新我的游戏技能
 
 ### 文件上传
 

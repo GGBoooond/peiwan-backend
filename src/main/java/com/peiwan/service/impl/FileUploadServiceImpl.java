@@ -65,8 +65,8 @@ public class FileUploadServiceImpl implements FileUploadService {
             Path filePath = uploadDir.resolve(filename);
             Files.copy(file.getInputStream(), filePath);
 
-            // 返回文件URL
-            String fileUrl = "/uploads/" + datePath + "/" + filename;
+            // 返回文件URL (包含API前缀，因为context-path是/api)
+            String fileUrl = "/api/uploads/" + datePath + "/" + filename;
             log.info("文件上传成功: {}", fileUrl);
             return fileUrl;
 
