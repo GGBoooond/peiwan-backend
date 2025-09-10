@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.Delete;
 
 import java.util.List;
 
@@ -40,9 +41,9 @@ public interface CsEmployeeMappingMapper {
     int updateById(CsEmployeeMapping mapping);
 
     /**
-     * 根据ID删除客服员工关系（逻辑删除）
+     * 根据ID删除客服员工关系（物理删除）
      */
-    @Update("UPDATE cs_employee_mappings SET deleted = 1, updated_at = NOW() WHERE id = #{id}")
+    @Delete("DELETE FROM cs_employee_mappings WHERE id = #{id}")
     int deleteById(@Param("id") Long id);
 
     /**
@@ -78,12 +79,12 @@ public interface CsEmployeeMappingMapper {
     /**
      * 批量删除客服员工关系
      */
-    @Update("UPDATE cs_employee_mappings SET deleted = 1, updated_at = NOW() WHERE cs_user_id = #{csUserId} AND deleted = 0")
+    @Delete("DELETE FROM cs_employee_mappings WHERE cs_user_id = #{csUserId}")
     int deleteByCsUserId(@Param("csUserId") Long csUserId);
 
     /**
      * 批量删除员工的所有关系
      */
-    @Update("UPDATE cs_employee_mappings SET deleted = 1, updated_at = NOW() WHERE employee_user_id = #{employeeUserId} AND deleted = 0")
+    @Delete("DELETE FROM cs_employee_mappings WHERE employee_user_id = #{employeeUserId}")
     int deleteByEmployeeUserId(@Param("employeeUserId") Long employeeUserId);
 }
