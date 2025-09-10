@@ -163,7 +163,7 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("工单不存在");
         }
 
-        if (order.getStatus() != Order.OrderStatus.PENDING_AUDIT) {
+        if (order.getStatus() != Order.OrderStatus.PENDING_AUDIT && order.getStatus() != Order.OrderStatus.REJECTED_TO_SUBMIT) {
             throw new RuntimeException("工单状态不允许审核");
         }
 
