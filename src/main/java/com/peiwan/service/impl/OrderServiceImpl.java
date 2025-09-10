@@ -97,9 +97,10 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("工单状态不允许接单");
         }
 
-        // 更新工单状态
+        // 更新工单状态与接单截图
         order.setStatus(Order.OrderStatus.IN_PROGRESS);
         order.setAcceptedAt(LocalDateTime.now());
+        order.setAcceptanceScreenshotUrl(imageUrl);
         order.setUpdatedAt(LocalDateTime.now());
         orderMapper.updateById(order);
 
@@ -133,9 +134,10 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("工单状态不允许完成");
         }
 
-        // 更新工单状态
+        // 更新工单状态与完成截图
         order.setStatus(Order.OrderStatus.PENDING_AUDIT);
         order.setCompletedAt(LocalDateTime.now());
+        order.setCompletionScreenshotUrl(request.getImageUrl());
         order.setUpdatedAt(LocalDateTime.now());
         orderMapper.updateById(order);
 

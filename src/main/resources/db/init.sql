@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS cs_employee_mappings (
     deleted TINYINT NOT NULL DEFAULT 0 COMMENT '逻辑删除标记',
     FOREIGN KEY (cs_user_id) REFERENCES users(id),
     FOREIGN KEY (employee_user_id) REFERENCES users(id),
-    UNIQUE KEY uk_cs_employee (cs_user_id, employee_user_id)
+    UNIQUE KEY uk_cs_employee (cs_user_id, employee_user_id,deleted)
 ) COMMENT '客服员工关系表';
 
 -- 工单表

@@ -49,6 +49,16 @@ public class Order {
     private String orderInfoScreenshotUrl;
 
     /**
+     * 接单信息截图URL
+     */
+    private String acceptanceScreenshotUrl;
+
+    /**
+     * 完成信息截图URL
+     */
+    private String completionScreenshotUrl;
+
+    /**
      * 接单时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -98,6 +108,12 @@ public class Order {
     
     public String getOrderInfoScreenshotUrl() { return orderInfoScreenshotUrl; }
     public void setOrderInfoScreenshotUrl(String orderInfoScreenshotUrl) { this.orderInfoScreenshotUrl = orderInfoScreenshotUrl; }
+    
+    public String getAcceptanceScreenshotUrl() { return acceptanceScreenshotUrl; }
+    public void setAcceptanceScreenshotUrl(String acceptanceScreenshotUrl) { this.acceptanceScreenshotUrl = acceptanceScreenshotUrl; }
+    
+    public String getCompletionScreenshotUrl() { return completionScreenshotUrl; }
+    public void setCompletionScreenshotUrl(String completionScreenshotUrl) { this.completionScreenshotUrl = completionScreenshotUrl; }
     
     public LocalDateTime getAcceptedAt() { return acceptedAt; }
     public void setAcceptedAt(LocalDateTime acceptedAt) { this.acceptedAt = acceptedAt; }

@@ -22,9 +22,9 @@ public interface OrderMapper {
      * 插入工单
      */
     @Insert("INSERT INTO orders (order_number, client_info, status, assigned_employee_id, created_by_cs_id, " +
-            "order_info_screenshot_url, accepted_at, completed_at, created_at, updated_at, deleted) " +
+            "order_info_screenshot_url, acceptance_screenshot_url, completion_screenshot_url, accepted_at, completed_at, created_at, updated_at, deleted) " +
             "VALUES (#{orderNumber}, #{clientInfo}, #{status}, #{assignedEmployeeId}, #{createdByCsId}, " +
-            "#{orderInfoScreenshotUrl}, #{acceptedAt}, #{completedAt}, #{createdAt}, #{updatedAt}, #{deleted})")
+            "#{orderInfoScreenshotUrl}, #{acceptanceScreenshotUrl}, #{completionScreenshotUrl}, #{acceptedAt}, #{completedAt}, #{createdAt}, #{updatedAt}, #{deleted})")
     @org.apache.ibatis.annotations.Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Order order);
 
@@ -39,7 +39,8 @@ public interface OrderMapper {
      */
     @Update("UPDATE orders SET order_number = #{orderNumber}, client_info = #{clientInfo}, " +
             "status = #{status}, assigned_employee_id = #{assignedEmployeeId}, " +
-            "order_info_screenshot_url = #{orderInfoScreenshotUrl}, accepted_at = #{acceptedAt}, " +
+            "order_info_screenshot_url = #{orderInfoScreenshotUrl}, acceptance_screenshot_url = #{acceptanceScreenshotUrl}, " +
+            "completion_screenshot_url = #{completionScreenshotUrl}, accepted_at = #{acceptedAt}, " +
             "completed_at = #{completedAt}, updated_at = #{updatedAt} WHERE id = #{id}")
     int updateById(Order order);
 
