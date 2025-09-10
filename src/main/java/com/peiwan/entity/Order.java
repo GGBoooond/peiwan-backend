@@ -138,7 +138,8 @@ public class Order {
         IN_PROGRESS("进行中"),
         PENDING_AUDIT("待审核"),
         COMPLETED("已结单"),
-        REJECTED("未通过");
+        REJECTED("未通过"),
+        REJECTED_TO_SUBMIT("重新审核中");
 
         private final String description;
 

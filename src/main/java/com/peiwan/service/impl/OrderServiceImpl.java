@@ -210,6 +210,7 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setOrderNumber(generateOrderNumber());
         newOrder.setClientInfo(originalOrder.getClientInfo());
         newOrder.setStatus(Order.OrderStatus.PENDING_ACCEPTANCE);
+        newOrder.setOrderInfoScreenshotUrl(originalOrder.getOrderInfoScreenshotUrl());
         newOrder.setAssignedEmployeeId(employeeId);
         newOrder.setCreatedByCsId(originalOrder.getCreatedByCsId());
         newOrder.setCreatedAt(LocalDateTime.now());
@@ -217,6 +218,49 @@ public class OrderServiceImpl implements OrderService {
 
         orderMapper.insert(newOrder);
         log.info("续单创建成功: {} -> {}", originalOrder.getOrderNumber(), newOrder.getOrderNumber());
+        return newOrder;
+    }
+
+    @Override
+    @Transactional
+    public Order reSubmitOrder(Long orderId, OrderCompleteRequest request, Long employeeId) {
+        Order originalOrder = findById(orderId);
+        if (originalOrder == null) {
+            throw new RuntimeException("原工单不存在");
+        }
+
+        if (!originalOrder.getAssignedEmployeeId().equals(employeeId)) {
+            throw new RuntimeException("无权操作此工单");
+        }
+
+        if (originalOrder.getStatus() != Order.OrderStatus.REJECTED) {
+            throw new RuntimeException("只有被拒绝的工单才能重新提单");
+        }
+
+        // 创建重提单
+        Order newOrder = new Order();
+        newOrder.setOrderNumber(generateOrderNumber());
+        newOrder.setClientInfo(originalOrder.getClientInfo());
+        newOrder.setStatus(Order.OrderStatus.REJECTED_TO_SUBMIT);
+        newOrder.setOrderInfoScreenshotUrl(originalOrder.getOrderInfoScreenshotUrl());
+        newOrder.setAcceptanceScreenshotUrl(originalOrder.getAcceptanceScreenshotUrl());
+        newOrder.setCompletionScreenshotUrl(request.getImageUrl());
+        newOrder.setAssignedEmployeeId(employeeId);
+        newOrder.setCreatedByCsId(originalOrder.getCreatedByCsId());
+        newOrder.setCreatedAt(LocalDateTime.now());
+        newOrder.setUpdatedAt(LocalDateTime.now());
+
+        orderMapper.insert(newOrder);
+        // 保存完成凭证
+        OrderProof proof = new OrderProof();
+        proof.setOrderId(orderId);
+        proof.setProofType(OrderProof.ProofType.COMPLETION);
+        proof.setImageUrl(request.getImageUrl());
+        proof.setUploadedAt(LocalDateTime.now());
+        proof.setCreatedAt(LocalDateTime.now());
+        proof.setUpdatedAt(LocalDateTime.now());
+        orderProofMapper.insert(proof);
+        log.info("重新提单创建成功: {} -> {}", originalOrder.getOrderNumber(), newOrder.getOrderNumber());
         return newOrder;
     }
 

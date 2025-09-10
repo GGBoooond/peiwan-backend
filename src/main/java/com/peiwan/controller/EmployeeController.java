@@ -175,6 +175,28 @@ public class EmployeeController {
         }
     }
 
+    @PostMapping("/orders/{orderId}/reSubmit")
+    @Operation(summary = "重新上交", description = "工单审核失败后员工重新提交")
+    public ApiResponse<Order> reSubmit(@PathVariable Long orderId,  @RequestBody OrderCompleteRequest request, HttpServletRequest httpRequest) {
+        try {
+            // 从请求头获取员工ID
+            String employeeIdStr = httpRequest.getHeader("X-User-Id");
+            if (employeeIdStr == null) {
+                return ApiResponse.<Order>error(401, "未找到用户信息")
+                        .requestId(httpRequest.getHeader("X-Request-Id"));
+            }
+
+            Long employeeId = Long.parseLong(employeeIdStr);
+            Order order = orderService.reSubmitOrder(orderId, request, employeeId);
+            return ApiResponse.success("续单创建成功", order)
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        } catch (Exception e) {
+            log.error("续单失败: {}", e.getMessage());
+            return ApiResponse.<Order>error(400, e.getMessage())
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        }
+    }
+
     @GetMapping("/game-skills")
     @Operation(summary = "获取我的游戏技能", description = "员工获取自己的游戏技能列表")
     public ApiResponse<List<GameSkill>> getMyGameSkills(HttpServletRequest httpRequest) {

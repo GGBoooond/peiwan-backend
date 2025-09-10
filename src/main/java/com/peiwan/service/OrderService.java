@@ -61,6 +61,11 @@ public interface OrderService {
     Order renewOrder(Long orderId, Long employeeId);
 
     /**
+     * 重新提单
+     */
+    Order reSubmitOrder(Long orderId,OrderCompleteRequest request, Long employeeId);
+
+    /**
      * 生成工单编号
      */
     String generateOrderNumber();
