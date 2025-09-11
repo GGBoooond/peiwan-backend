@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS cs_employee_mappings (
     deleted TINYINT NOT NULL DEFAULT 0 COMMENT '逻辑删除标记',
     FOREIGN KEY (cs_user_id) REFERENCES users(id),
     FOREIGN KEY (employee_user_id) REFERENCES users(id),
-    UNIQUE KEY uk_cs_employee (cs_user_id, employee_user_id,deleted)
+    UNIQUE KEY uk_cs_employee (cs_user_id, employee_user_id)
 ) COMMENT '客服员工关系表';
 
 -- 工单表
@@ -74,6 +74,11 @@ CREATE TABLE IF NOT EXISTS orders (
     FOREIGN KEY (assigned_employee_id) REFERENCES users(id),
     FOREIGN KEY (created_by_cs_id) REFERENCES users(id)
 ) COMMENT '工单表';
+
+-- 同时添加两个截图URL字段
+ALTER TABLE orders 
+ADD COLUMN acceptance_screenshot_url VARCHAR(500) COMMENT '接单信息截图URL',
+ADD COLUMN completion_screenshot_url VARCHAR(500) COMMENT '完成信息截图URL';
 
 -- 工单凭证表
 CREATE TABLE IF NOT EXISTS order_proofs (
