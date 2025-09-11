@@ -2,6 +2,7 @@ package com.peiwan.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.BCrypt;
+import com.peiwan.dto.ChangePasswordRequest;
 import com.peiwan.dto.LoginRequest;
 import com.peiwan.dto.LoginResponse;
 import com.peiwan.dto.RegisterRequest;
@@ -181,6 +182,38 @@ public class UserServiceImpl implements UserService {
             user.setUpdatedAt(LocalDateTime.now());
             userMapper.updateById(user);
         }
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Long userId, ChangePasswordRequest request) {
+        // 验证新密码和确认密码是否一致
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new RuntimeException("新密码和确认密码不一致");
+        }
+
+        // 查找用户
+        User user = findById(userId);
+        if (user == null) {
+            throw new RuntimeException("用户不存在");
+        }
+
+        // 验证当前密码
+        if (!BCrypt.checkpw(request.getCurrentPassword(), user.getPasswordHash())) {
+            throw new RuntimeException("当前密码错误");
+        }
+
+        // 检查新密码是否与当前密码相同
+        if (BCrypt.checkpw(request.getNewPassword(), user.getPasswordHash())) {
+            throw new RuntimeException("新密码不能与当前密码相同");
+        }
+
+        // 更新密码
+        user.setPasswordHash(BCrypt.hashpw(request.getNewPassword(), BCrypt.gensalt()));
+        user.setUpdatedAt(LocalDateTime.now());
+        userMapper.updateById(user);
+
+        log.info("用户密码修改成功: userId={}, username={}", userId, user.getUsername());
     }
 }
 

@@ -1,6 +1,7 @@
 package com.peiwan.controller;
 
 import com.peiwan.dto.ApiResponse;
+import com.peiwan.dto.ChangePasswordRequest;
 import com.peiwan.dto.LoginRequest;
 import com.peiwan.dto.LoginResponse;
 import com.peiwan.dto.RegisterRequest;
@@ -115,6 +116,31 @@ public class AuthController {
         } catch (Exception e) {
             log.error("检查用户名失败: {}", e.getMessage());
             return ApiResponse.<Boolean>error(500, "检查用户名失败")
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        }
+    }
+
+    @PostMapping("/change-password")
+    @Operation(summary = "修改用户密码", description = "用户修改自己的登录密码")
+    public ApiResponse<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request, 
+                                          HttpServletRequest httpRequest, 
+                                          HttpSession session) {
+        try {
+            // 从session中获取用户ID
+            Long userId = (Long) session.getAttribute("userId");
+            if (userId == null) {
+                return ApiResponse.<Void>error(401, "用户未登录")
+                        .requestId(httpRequest.getHeader("X-Request-Id"));
+            }
+
+            // 调用服务层修改密码
+            userService.changePassword(userId, request);
+            
+            return ApiResponse.<Void>success("密码修改成功", null)
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        } catch (Exception e) {
+            log.error("修改密码失败: {}", e.getMessage());
+            return ApiResponse.<Void>error(400, e.getMessage())
                     .requestId(httpRequest.getHeader("X-Request-Id"));
         }
     }

@@ -1,5 +1,6 @@
 package com.peiwan.service;
 
+import com.peiwan.dto.ChangePasswordRequest;
 import com.peiwan.dto.LoginRequest;
 import com.peiwan.dto.LoginResponse;
 import com.peiwan.dto.RegisterRequest;
@@ -74,5 +75,10 @@ public interface UserService {
      * 更新最后登录时间
      */
     void updateLastLogin(Long userId);
+
+    /**
+     * 修改用户密码
+     */
+    void changePassword(Long userId, ChangePasswordRequest request);
 }
 

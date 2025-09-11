@@ -66,13 +66,14 @@ public class AdminController {
     }
 
     @PostMapping("/users")
-    @Operation(summary = "创建用户", description = "管理员创建新用户")
+    @Operation(summary = "创建客服用户", description = "管理员创建新客服用户，默认密码为123456")
     public ApiResponse<User> createUser(@RequestBody User user, HttpServletRequest httpRequest) {
         try {
             //管理员创建的用户默认密码为123456
             user.setPasswordHash(BCrypt.hashpw("123456", BCrypt.gensalt()));
             user.setCreatedAt(LocalDateTime.now());
             user.setUpdatedAt(LocalDateTime.now());
+            user.setRole(User.UserRole.CS);
             userService.createUser(user);
             return ApiResponse.success("用户创建成功", new User())
                     .requestId(httpRequest.getHeader("X-Request-Id"));
