@@ -77,9 +77,9 @@ public interface UserMapper {
     List<User> findAllActive();
 
     /**
-     * 查找所有激活的用户（包含员工状态）
+     * 查找所有激活的用户（包含员工状态和性别）
      */
-    @Select("SELECT u.*, ep.work_status FROM users u " +
+    @Select("SELECT u.*, ep.work_status, ep.gender FROM users u " +
             "LEFT JOIN employee_profiles ep ON u.id = ep.user_id AND ep.deleted = 0 " +
             "WHERE u.is_active = 1 AND u.deleted = 0 ORDER BY u.created_at DESC")
     List<User> findAllActiveWithWorkStatus();

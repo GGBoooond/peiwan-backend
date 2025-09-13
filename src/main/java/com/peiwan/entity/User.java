@@ -89,6 +89,11 @@ public class User {
      */
     private EmployeeProfile.WorkStatus workStatus;
 
+    /**
+     * 员工性别（仅用于数据传输，不持久化）
+     */
+    private EmployeeProfile.Gender gender;
+
     // 手动添加getter/setter方法以确保编译通过
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -125,6 +130,9 @@ public class User {
     
     public EmployeeProfile.WorkStatus getWorkStatus() { return workStatus; }
     public void setWorkStatus(EmployeeProfile.WorkStatus workStatus) { this.workStatus = workStatus; }
+    
+    public EmployeeProfile.Gender getGender() { return gender; }
+    public void setGender(EmployeeProfile.Gender gender) { this.gender = gender; }
 
     /**
      * 用户角色枚举
