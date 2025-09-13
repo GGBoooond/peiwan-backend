@@ -91,6 +91,14 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("用户名已存在");
         }
 
+        // 检查手机号是否已存在（如果提供了手机号）
+        if (request.getPhone() != null && !request.getPhone().trim().isEmpty()) {
+            User existingPhoneUser = findByPhone(request.getPhone());
+            if (existingPhoneUser != null) {
+                throw new RuntimeException("手机号已存在");
+            }
+        }
+
         // 验证用户名和真实姓名是否匹配（需要管理员预先录入）
         if (!validateUsernameAndRealName(request.getUsername(), request.getRealName())) {
             throw new RuntimeException("用户名或真实姓名不匹配，请联系管理员");
@@ -100,6 +108,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setRealName(request.getRealName());
+        user.setPhone(request.getPhone());
         user.setPasswordHash(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
         user.setRole(User.UserRole.EMPLOYEE); // 默认为员工角色
         user.setIsActive(true);
@@ -134,6 +143,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findByPhone(String phone) {
+        if (StrUtil.isBlank(phone)) {
+            return null;
+        }
+        return userMapper.findByPhone(phone);
+    }
+
+    @Override
     public List<User> findByRole(User.UserRole role) {
         return userMapper.findByRole(role);
     }
@@ -141,6 +158,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAllActive() {
         return userMapper.findAllActive();
+    }
+
+    @Override
+    public List<User> findAllActiveWithWorkStatus() {
+        return userMapper.findAllActiveWithWorkStatus();
     }
 
     @Override

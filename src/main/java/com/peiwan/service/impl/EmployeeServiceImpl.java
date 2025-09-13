@@ -65,6 +65,31 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
+    public EmployeeProfile updateProfile(Long userId, EmployeeProfile.Gender gender, EmployeeProfile.WorkStatus workStatus) {
+        EmployeeProfile profile = findByUserId(userId);
+        if (profile == null) {
+            profile = createProfile(userId);
+        }
+
+        // 更新性别（如果提供了的话）
+        if (gender != null) {
+            profile.setGender(gender);
+        }
+        
+        // 更新工作状态（如果提供了的话）
+        if (workStatus != null) {
+            profile.setWorkStatus(workStatus);
+        }
+        
+        profile.setUpdatedAt(LocalDateTime.now());
+        employeeProfileMapper.updateById(profile);
+
+        log.info("员工资料更新: userId={}, gender={}, status={}", userId, gender, workStatus);
+        return profile;
+    }
+
+    @Override
+    @Transactional
     public List<GameSkill> updateGameSkills(Long userId, List<GameSkill> gameSkills) {
         EmployeeProfile profile = findByUserId(userId);
         if (profile == null) {

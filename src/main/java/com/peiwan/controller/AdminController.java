@@ -38,10 +38,10 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    @Operation(summary = "获取用户列表", description = "管理员获取所有用户列表")
+    @Operation(summary = "获取用户列表", description = "管理员获取所有用户列表（包含员工状态）")
     public ApiResponse<List<User>> getUsers(HttpServletRequest httpRequest) {
         try {
-            List<User> users = userService.findAllActive();
+            List<User> users = userService.findAllActiveWithWorkStatus();
             return ApiResponse.success("获取用户列表成功", users)
                     .requestId(httpRequest.getHeader("X-Request-Id"));
         } catch (Exception e) {

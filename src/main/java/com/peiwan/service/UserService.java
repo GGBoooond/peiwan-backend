@@ -42,6 +42,11 @@ public interface UserService {
     User findByRealName(String realName);
 
     /**
+     * 根据手机号查找用户
+     */
+    User findByPhone(String phone);
+
+    /**
      * 根据角色查找用户列表
      */
     List<User> findByRole(User.UserRole role);
@@ -50,6 +55,11 @@ public interface UserService {
      * 查找所有激活的用户
      */
     List<User> findAllActive();
+
+    /**
+     * 查找所有激活的用户（包含员工状态）
+     */
+    List<User> findAllActiveWithWorkStatus();
 
     /**
      * 更新用户信息

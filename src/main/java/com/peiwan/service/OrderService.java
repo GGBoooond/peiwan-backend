@@ -36,6 +36,11 @@ public interface OrderService {
     List<Order> findByCsId(Long csId);
 
     /**
+     * 根据客服ID和员工ID查找工单列表
+     */
+    List<Order> findByCsIdAndEmployeeId(Long csId, Long employeeId);
+
+    /**
      * 根据状态查找工单列表
      */
     List<Order> findByStatus(Order.OrderStatus status);

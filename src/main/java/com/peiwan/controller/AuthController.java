@@ -120,6 +120,21 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/check-phone/{phone}")
+    @Operation(summary = "检查手机号可用性", description = "检查手机号是否已被使用")
+    public ApiResponse<Boolean> checkPhoneAvailability(@PathVariable String phone, HttpServletRequest httpRequest) {
+        try {
+            User existingUser = userService.findByPhone(phone);
+            boolean available = existingUser == null;
+            return ApiResponse.<Boolean>success("检查完成", available)
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        } catch (Exception e) {
+            log.error("检查手机号失败: {}", e.getMessage());
+            return ApiResponse.<Boolean>error(500, "检查手机号失败")
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        }
+    }
+
     @PostMapping("/change-password")
     @Operation(summary = "修改用户密码", description = "用户修改自己的登录密码")
     public ApiResponse<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request, 

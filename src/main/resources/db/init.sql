@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL UNIQUE COMMENT '游戏昵称（登录名）',
     password_hash VARCHAR(100) NOT NULL COMMENT '加密后的密码',
     real_name VARCHAR(50) NOT NULL COMMENT '真实姓名',
+    phone VARCHAR(20) COMMENT '手机号',
     role ENUM('ADMIN', 'CS', 'EMPLOYEE') NOT NULL COMMENT '用户角色',
     is_active BOOLEAN NOT NULL DEFAULT TRUE COMMENT '账户是否激活',
     last_login DATETIME COMMENT '最后登录时间',
@@ -80,6 +81,10 @@ ALTER TABLE orders
 ADD COLUMN acceptance_screenshot_url VARCHAR(500) COMMENT '接单信息截图URL',
 ADD COLUMN completion_screenshot_url VARCHAR(500) COMMENT '完成信息截图URL';
 
+-- 添加手机号字段（如果不存在）
+ALTER TABLE users 
+ADD COLUMN IF NOT EXISTS phone VARCHAR(20) COMMENT '手机号' AFTER real_name;
+
 -- 工单凭证表
 CREATE TABLE IF NOT EXISTS order_proofs (
     id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '凭证ID',
@@ -134,22 +139,22 @@ CREATE INDEX idx_audit_logs_order_id ON audit_logs(order_id);
 CREATE INDEX idx_audit_logs_auditor_id ON audit_logs(auditor_id);
 
 -- 插入默认管理员账号
-INSERT INTO users (username, password_hash, real_name, role, is_active, created_at, updated_at) VALUES
-('admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', '系统管理员', 'ADMIN', TRUE, NOW(), NOW())
+INSERT INTO users (username, password_hash, real_name, phone, role, is_active, created_at, updated_at) VALUES
+('admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', '系统管理员', '13800138000', 'ADMIN', TRUE, NOW(), NOW())
 ON DUPLICATE KEY UPDATE updated_at = NOW();
 
 -- 插入示例数据（可选）
 -- 示例客服
-INSERT INTO users (username, password_hash, real_name, role, is_active, created_at, updated_at) VALUES
-('cs001', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', '客服小王', 'CS', TRUE, NOW(), NOW()),
-('cs002', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', '客服小李', 'CS', TRUE, NOW(), NOW())
+INSERT INTO users (username, password_hash, real_name, phone, role, is_active, created_at, updated_at) VALUES
+('cs001', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', '客服小王', '13800138001', 'CS', TRUE, NOW(), NOW()),
+('cs002', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', '客服小李', '13800138002', 'CS', TRUE, NOW(), NOW())
 ON DUPLICATE KEY UPDATE updated_at = NOW();
 
 -- 示例员工
-INSERT INTO users (username, password_hash, real_name, role, is_active, created_at, updated_at) VALUES
-('emp001', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', '员工张三', 'EMPLOYEE', TRUE, NOW(), NOW()),
-('emp002', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', '员工李四', 'EMPLOYEE', TRUE, NOW(), NOW()),
-('emp003', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', '员工王五', 'EMPLOYEE', TRUE, NOW(), NOW())
+INSERT INTO users (username, password_hash, real_name, phone, role, is_active, created_at, updated_at) VALUES
+('emp001', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', '员工张三', '13800138003', 'EMPLOYEE', TRUE, NOW(), NOW()),
+('emp002', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', '员工李四', '13800138004', 'EMPLOYEE', TRUE, NOW(), NOW()),
+('emp003', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', '员工王五', '13800138005', 'EMPLOYEE', TRUE, NOW(), NOW())
 ON DUPLICATE KEY UPDATE updated_at = NOW();
 
 -- 插入员工资料

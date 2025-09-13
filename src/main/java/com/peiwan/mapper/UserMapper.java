@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.Delete;
 
 import java.util.List;
 
@@ -22,8 +21,8 @@ public interface UserMapper {
     /**
      * 插入用户
      */
-    @Insert("INSERT INTO users (username, password_hash, real_name, role, is_active, last_login, created_at, updated_at, deleted) " +
-            "VALUES (#{username}, #{passwordHash}, #{realName}, #{role}, #{isActive}, #{lastLogin}, #{createdAt}, #{updatedAt}, #{deleted})")
+    @Insert("INSERT INTO users (username, password_hash, real_name, phone, role, is_active, last_login, created_at, updated_at, deleted) " +
+            "VALUES (#{username}, #{passwordHash}, #{realName}, #{phone}, #{role}, #{isActive}, #{lastLogin}, #{createdAt}, #{updatedAt}, #{deleted})")
     @org.apache.ibatis.annotations.Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(User user);
 
@@ -37,7 +36,7 @@ public interface UserMapper {
      * 根据ID更新用户
      */
     @Update("UPDATE users SET username = #{username}, password_hash = #{passwordHash}, real_name = #{realName}, " +
-            "role = #{role}, is_active = #{isActive}, last_login = #{lastLogin}, updated_at = #{updatedAt} " +
+            "phone = #{phone}, role = #{role}, is_active = #{isActive}, last_login = #{lastLogin}, updated_at = #{updatedAt} " +
             "WHERE id = #{id}")
     int updateById(User user);
 
@@ -60,6 +59,12 @@ public interface UserMapper {
     User findByRealName(@Param("realName") String realName);
 
     /**
+     * 根据手机号查找用户
+     */
+    @Select("SELECT * FROM users WHERE phone = #{phone} AND deleted = 0")
+    User findByPhone(@Param("phone") String phone);
+
+    /**
      * 根据角色查找用户列表
      */
     @Select("SELECT * FROM users WHERE role = #{role} AND deleted = 0 ORDER BY created_at DESC")
@@ -70,5 +75,13 @@ public interface UserMapper {
      */
     @Select("SELECT * FROM users WHERE is_active = 1 AND deleted = 0 ORDER BY created_at DESC")
     List<User> findAllActive();
+
+    /**
+     * 查找所有激活的用户（包含员工状态）
+     */
+    @Select("SELECT u.*, ep.work_status FROM users u " +
+            "LEFT JOIN employee_profiles ep ON u.id = ep.user_id AND ep.deleted = 0 " +
+            "WHERE u.is_active = 1 AND u.deleted = 0 ORDER BY u.created_at DESC")
+    List<User> findAllActiveWithWorkStatus();
 }
 

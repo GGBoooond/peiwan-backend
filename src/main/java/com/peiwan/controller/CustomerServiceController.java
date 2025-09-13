@@ -103,6 +103,28 @@ public class CustomerServiceController {
         }
     }
 
+    @GetMapping("/employees/{employeeId}/orders")
+    @Operation(summary = "获取指定员工的工单", description = "客服获取指定员工下委派的工单列表")
+    public ApiResponse<List<Order>> getEmployeeOrders(@PathVariable Long employeeId, HttpServletRequest httpRequest) {
+        try {
+            // 从请求头获取客服ID
+            String csUserIdStr = httpRequest.getHeader("X-User-Id");
+            if (csUserIdStr == null) {
+                return ApiResponse.<List<Order>>error(401, "未找到用户信息")
+                        .requestId(httpRequest.getHeader("X-Request-Id"));
+            }
+
+            Long csUserId = Long.parseLong(csUserIdStr);
+            List<Order> orders = orderService.findByCsIdAndEmployeeId(csUserId, employeeId);
+            return ApiResponse.success("获取员工工单列表成功", orders)
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        } catch (Exception e) {
+            log.error("获取员工工单列表失败: {}", e.getMessage());
+            return ApiResponse.<List<Order>>error(500, "获取员工工单列表失败")
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        }
+    }
+
     @PostMapping("/orders/{orderId}/audit")
     @Operation(summary = "审核工单", description = "客服审核工单")
     public ApiResponse<Order> auditOrder(@PathVariable Long orderId, @RequestBody OrderAuditRequest request, HttpServletRequest httpRequest) {

@@ -77,6 +77,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Order> findByCsIdAndEmployeeId(Long csId, Long employeeId) {
+        return orderMapper.findByCsIdAndEmployeeId(csId, employeeId);
+    }
+
+    @Override
     public List<Order> findByStatus(Order.OrderStatus status) {
         return orderMapper.findByStatus(status);
     }

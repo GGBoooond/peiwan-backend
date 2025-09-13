@@ -79,5 +79,11 @@ public interface OrderMapper {
      */
     @Select("SELECT * FROM orders WHERE assigned_employee_id = #{employeeId} AND status = #{status} AND deleted = 0 ORDER BY created_at DESC")
     List<Order> findByEmployeeIdAndStatus(@Param("employeeId") Long employeeId, @Param("status") Order.OrderStatus status);
+
+    /**
+     * 根据客服ID和员工ID查找工单列表
+     */
+    @Select("SELECT * FROM orders WHERE created_by_cs_id = #{csId} AND assigned_employee_id = #{employeeId} AND deleted = 0 ORDER BY created_at DESC")
+    List<Order> findByCsIdAndEmployeeId(@Param("csId") Long csId, @Param("employeeId") Long employeeId);
 }
 

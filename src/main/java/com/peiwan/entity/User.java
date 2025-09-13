@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 /**
@@ -44,6 +45,13 @@ public class User {
     private String realName;
 
     /**
+     * 手机号
+     */
+    @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号格式不正确")
+    @Size(max = 20, message = "手机号长度不能超过20个字符")
+    private String phone;
+
+    /**
      * 用户角色
      */
     private UserRole role;
@@ -76,6 +84,11 @@ public class User {
      */
     private Integer deleted = 0;
 
+    /**
+     * 员工工作状态（仅用于数据传输，不持久化）
+     */
+    private EmployeeProfile.WorkStatus workStatus;
+
     // 手动添加getter/setter方法以确保编译通过
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -88,6 +101,9 @@ public class User {
     
     public String getRealName() { return realName; }
     public void setRealName(String realName) { this.realName = realName; }
+    
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
     
     public UserRole getRole() { return role; }
     public void setRole(UserRole role) { this.role = role; }
@@ -106,6 +122,9 @@ public class User {
     
     public Integer getDeleted() { return deleted; }
     public void setDeleted(Integer deleted) { this.deleted = deleted; }
+    
+    public EmployeeProfile.WorkStatus getWorkStatus() { return workStatus; }
+    public void setWorkStatus(EmployeeProfile.WorkStatus workStatus) { this.workStatus = workStatus; }
 
     /**
      * 用户角色枚举

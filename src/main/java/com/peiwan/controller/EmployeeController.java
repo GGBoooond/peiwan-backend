@@ -63,9 +63,9 @@ public class EmployeeController {
         }
     }
 
-    //更新员工状态
+    //更新员工状态和性别
     @PutMapping("/profile")
-    @Operation(summary = "更新员工状态", description = "员工更新个人资料")
+    @Operation(summary = "更新员工资料", description = "员工更新个人资料（状态和性别）")
     public ApiResponse<EmployeeProfile> updateProfile(@RequestBody EmployeeProfile profile, HttpServletRequest httpRequest) {
         try {
             // 从请求头获取员工ID
@@ -77,7 +77,7 @@ public class EmployeeController {
 
             Long employeeId = Long.parseLong(employeeIdStr);
             profile.setUserId(employeeId);
-            EmployeeProfile updatedProfile = employeeService.updateWorkStatus(employeeId, profile.getWorkStatus());
+            EmployeeProfile updatedProfile = employeeService.updateProfile(employeeId, profile.getGender(), profile.getWorkStatus());
             return ApiResponse.success("个人资料更新成功", updatedProfile)
                     .requestId(httpRequest.getHeader("X-Request-Id"));
         } catch (Exception e) {

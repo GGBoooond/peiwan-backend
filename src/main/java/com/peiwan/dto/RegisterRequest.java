@@ -2,6 +2,7 @@ package com.peiwan.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 /**
@@ -28,6 +29,13 @@ public class RegisterRequest {
     private String realName;
 
     /**
+     * 手机号
+     */
+    @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号格式不正确")
+    @Size(max = 20, message = "手机号长度不能超过20个字符")
+    private String phone;
+
+    /**
      * 密码
      */
     @NotBlank(message = "密码不能为空")
@@ -46,6 +54,9 @@ public class RegisterRequest {
     
     public String getRealName() { return realName; }
     public void setRealName(String realName) { this.realName = realName; }
+    
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
     
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }

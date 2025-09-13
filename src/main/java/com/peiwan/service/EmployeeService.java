@@ -34,6 +34,11 @@ public interface EmployeeService {
     EmployeeProfile updateWorkStatus(Long userId, EmployeeProfile.WorkStatus workStatus);
 
     /**
+     * 更新员工资料（包括性别和工作状态）
+     */
+    EmployeeProfile updateProfile(Long userId, EmployeeProfile.Gender gender, EmployeeProfile.WorkStatus workStatus);
+
+    /**
      * 更新员工游戏技能
      */
     List<GameSkill> updateGameSkills(Long userId, List<GameSkill> gameSkills);

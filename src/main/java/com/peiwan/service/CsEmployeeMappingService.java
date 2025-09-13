@@ -82,3 +82,4 @@ public interface CsEmployeeMappingService {
      */
     boolean isCsManageEmployee(Long csUserId, Long employeeUserId);
 }
+
