@@ -47,6 +47,18 @@ public class AuthController {
             session.setAttribute("username", user.getUsername());
             session.setAttribute("userRole", user.getRole().name());
             
+            // 根据rememberMe设置session过期时间
+            Boolean rememberMe = request.getRememberMe();
+            if (rememberMe != null && rememberMe) {
+                // 记住登录：7天 = 7 * 24 * 60 * 60 = 604800秒
+                session.setMaxInactiveInterval(604800);
+                log.info("用户选择记住登录，session过期时间设为7天: userId={}", user.getId());
+            } else {
+                // 不记住登录：1天 = 24 * 60 * 60 = 86400秒
+                session.setMaxInactiveInterval(86400);
+                log.info("用户未选择记住登录，session过期时间设为1天: userId={}", user.getId());
+            }
+            
             return ApiResponse.<LoginResponse>success("登录成功", response)
                     .requestId(httpRequest.getHeader("X-Request-Id"));
         } catch (Exception e) {
@@ -73,10 +85,36 @@ public class AuthController {
     @PostMapping("/logout")
     @Operation(summary = "用户登出", description = "用户登出系统")
     public ApiResponse<Void> logout(HttpServletRequest httpRequest, HttpSession session) {
-        // 清除session
-        session.invalidate();
-        return ApiResponse.<Void>success("登出成功", null)
-                .requestId(httpRequest.getHeader("X-Request-Id"));
+        try {
+            // 检查session是否存在且有效
+            if (session != null) {
+                // 记录登出信息（如果用户已登录）
+                Long userId = (Long) session.getAttribute("userId");
+                String username = (String) session.getAttribute("username");
+                
+                if (userId != null) {
+                    log.info("用户登出: userId={}, username={}", userId, username);
+                } else {
+                    log.debug("未登录用户调用登出接口");
+                }
+                
+                // 安全地清除session
+                session.invalidate();
+            }
+            
+            return ApiResponse.<Void>success("登出成功", null)
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        } catch (IllegalStateException e) {
+            // Session已经失效的情况
+            log.warn("尝试清除已失效的session: {}", e.getMessage());
+            return ApiResponse.<Void>success("登出成功", null)
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        } catch (Exception e) {
+            // 其他异常情况
+            log.error("登出过程中发生异常: {}", e.getMessage(), e);
+            return ApiResponse.<Void>error(500, "登出失败")
+                    .requestId(httpRequest.getHeader("X-Request-Id"));
+        }
     }
 
     @GetMapping("/me")

@@ -83,7 +83,7 @@ ADD COLUMN completion_screenshot_url VARCHAR(500) COMMENT '完成信息截图URL
 
 -- 添加手机号字段（如果不存在）
 ALTER TABLE users 
-ADD COLUMN IF NOT EXISTS phone VARCHAR(20) COMMENT '手机号' AFTER real_name;
+ADD COLUMN phone VARCHAR(20) COMMENT '手机号' AFTER real_name;
 
 -- 工单凭证表
 CREATE TABLE IF NOT EXISTS order_proofs (
